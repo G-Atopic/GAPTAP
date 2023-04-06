@@ -85,8 +85,8 @@ const LoginPage = () => {
       if (values.email === 'gabriel@gmail.com' && values.password === '123') {
         router.push('/')
       }
-    } catch ({ path, message }: any) {
-      setError({ path, message })
+    } catch (error: any) {
+      setError({ path: error.path, message: error.message })
     }
   }
 
