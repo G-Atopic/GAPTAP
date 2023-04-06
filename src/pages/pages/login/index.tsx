@@ -1,5 +1,5 @@
 // ** React Imports
-import { ChangeEvent, MouseEvent, ReactNode, useState } from 'react'
+import { ChangeEvent, ReactNode, useState } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -9,24 +9,18 @@ import { useRouter } from 'next/router'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 
+import { object, string } from 'yup'
+
 // import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
-import InputLabel from '@mui/material/InputLabel'
 import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
-import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
-import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
 // ** Icons Imports
-
-import EyeOutline from 'mdi-material-ui/EyeOutline'
-import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
 
 // ** Configs
 
@@ -67,6 +61,10 @@ const LoginPage = () => {
     showPassword: false,
     email: ''
   })
+  const [error, setError] = useState<{ path: string; message: string }>({
+    path: '',
+    message: ''
+  })
 
   // ** Hook
   const router = useRouter()
@@ -75,12 +73,21 @@ const LoginPage = () => {
     setValues({ ...values, [prop]: event.target.value })
   }
 
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword })
-  }
+  const onClickButton = async () => {
+    try {
+      const shema = object({
+        email: string().email('Você precisa passar um email válido').required('Email é obrigatório'),
+        password: string().required('Senha é obrigatório')
+      })
 
-  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault()
+      await shema.validate(values)
+
+      if (values.email === 'gabriel@gmail.com' && values.password === '123') {
+        router.push('/')
+      }
+    } catch ({ path, message }: any) {
+      setError({ path, message })
+    }
   }
 
   return (
@@ -97,35 +104,27 @@ const LoginPage = () => {
             <TextField
               autoFocus
               fullWidth
+              error={error.path === 'email'}
+              helperText={error.path === 'email' ? error.message : ''}
               id='email'
               label='Email'
               value={values.email}
               sx={{ marginBottom: 4 }}
               onChange={handleChange('email')}
-              onBlur={() => console.log(values)}
             />
-            <FormControl fullWidth>
-              <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
-              <OutlinedInput
-                label='Password'
-                value={values.password}
-                id='auth-login-password'
-                onChange={handleChange('password')}
-                type={values.showPassword ? 'text' : 'password'}
-                endAdornment={
-                  <InputAdornment position='end'>
-                    <IconButton
-                      edge='end'
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      aria-label='toggle password visibility'
-                    >
-                      {values.showPassword ? <EyeOutline /> : <EyeOffOutline />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
+            <TextField
+              autoFocus
+              fullWidth
+              type='password'
+              error={error.path === 'password'}
+              helperText={error.path === 'password' ? error.message : ''}
+              id='password'
+              label='Senha'
+              value={values.password}
+              sx={{ marginBottom: 4 }}
+              onChange={handleChange('password')}
+            />
+
             <Box
               sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}
             >
@@ -134,17 +133,7 @@ const LoginPage = () => {
                 <LinkStyled onClick={e => e.preventDefault()}>Forgot Password?</LinkStyled>
               </Link>
             </Box>
-            <Button
-              fullWidth
-              size='large'
-              variant='contained'
-              sx={{ marginBottom: 7 }}
-              onClick={() => {
-                if (values.email === 'Gabriel' && values.password === '123') {
-                  router.push('/')
-                }
-              }}
-            >
+            <Button fullWidth size='large' variant='contained' sx={{ marginBottom: 7 }} onClick={onClickButton}>
               Login
             </Button>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>

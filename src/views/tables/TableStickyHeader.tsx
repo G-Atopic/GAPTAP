@@ -12,7 +12,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
 
 interface Column {
-  id: 'name' | 'code' | 'population' | 'size' | 'density'
+  id: 'name' | 'url'
   label: string
   minWidth?: number
   align?: 'right'
@@ -21,60 +21,39 @@ interface Column {
 
 const columns: readonly Column[] = [
   { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
   {
-    id: 'population',
-    label: 'Population',
+    id: 'url',
+    label: 'URL',
     minWidth: 170,
-    align: 'right',
     format: (value: number) => value.toLocaleString('en-US')
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US')
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value: number) => value.toFixed(2)
   }
 ]
 
 interface Data {
   name: string
-  code: string
-  size: number
-  density: number
-  population: number
+  url: string
 }
 
-function createData(name: string, code: string, population: number, size: number): Data {
-  const density = population / size
-
-  return { name, code, population, size, density }
+function createData(name: string, url: string): Data {
+  return { name, url }
 }
 
 const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767)
+  createData('India', 'www.India.domain.prod.com.br'),
+  createData('China', 'www.China.domain.prod.com.br'),
+  createData('Italy', 'www.Italy.domain.prod.com.br'),
+  createData('United States', 'www.States.domain.prod.com.br'),
+  createData('Canada', 'www.Canada.domain.prod.com.br'),
+  createData('Australia', 'www.Australia.domain.prod.com.br'),
+  createData('Germany', 'www.Germany.domain.prod.com.br'),
+  createData('Ireland', 'www.Ireland.domain.prod.com.br'),
+  createData('Mexico', 'www.Mexico.domain.prod.com.br'),
+  createData('Japan', 'www.Japan.domain.prod.com.br'),
+  createData('France', 'www.France.domain.prod.com.br'),
+  createData('United Kingdom', 'www.UnitedKingdom.domain.prod.com.br'),
+  createData('Russia', 'www.Russia.domain.prod.com.br'),
+  createData('Nigeria', 'www.Nigeria.domain.prod.com.br'),
+  createData('Brazil', 'www.Brazil.domain.prod.com.br')
 ]
 
 const TableStickyHeader = () => {
@@ -105,9 +84,9 @@ const TableStickyHeader = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
+            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
               return (
-                <TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
+                <TableRow hover role='checkbox' tabIndex={-1} key={index}>
                   {columns.map(column => {
                     const value = row[column.id]
 
