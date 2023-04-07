@@ -3,7 +3,7 @@ import React from 'react'
 import FormLayoutsBasic from 'src/views/form-layouts/FormLayoutsBasic'
 import TableStickyHeader from 'src/views/tables/TableStickyHeader'
 
-const Cadastro = () => {
+const Connections = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={6}>
@@ -16,4 +16,4 @@ const Cadastro = () => {
   )
 }
 
-export default Cadastro
+export default Connections
